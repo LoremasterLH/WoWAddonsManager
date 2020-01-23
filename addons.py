@@ -120,10 +120,10 @@ class Form(QMainWindow):
 
             else:
 #                Remove classic ... revisit as well as others that I always want disabled
-#                if text.find('classic') != -1 and self.classic == -1:
+                if text.find('classic') != -1 and self.classic == -1:
 #                    self.classic = i
-#                    self.addons[i] = text + ': disabled\n'
-#                    continue
+                    self.addons[i] = text + ': disabled\n'
+                    continue
 
                 box: QCheckBox = QCheckBox(text)
                 box.setObjectName(text)
@@ -160,8 +160,11 @@ class Form(QMainWindow):
 
         file = open('{0}{1}.txt'.format(self.groups_dir, group_name))
         for line in file:
-            text, value = line.split(': ')
-            states[text] = True if value == 'enabled\n' else False
+            try:
+                text, value = line.split(': ')
+                states[text] = True if value == 'enabled\n' else False
+            except ValueError:
+                print('Can\'t unpack line: {0}'.format(line))
         file.close()
 
         return states
@@ -230,6 +233,9 @@ class Form(QMainWindow):
             file.write('{0}: {1}'.format(box.title(), map[self.allGroups[group][box.title()]]))
             for check in box.findChildren(QCheckBox):
                 file.write('{0}: {1}'.format(check.text(), map[self.allGroups[group][check.text()]]))
+        for addon in self.addons:  # Somewhat dirty hack to write what is not displayed. Is it, though?
+            if addon.find('classic') != -1:
+                file.write(addon)
         file.close()
 
 if __name__ == '__main__':
