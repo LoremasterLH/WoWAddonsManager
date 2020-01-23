@@ -196,6 +196,7 @@ class Form(QMainWindow):
 
     # Load the data for the character
     def setupData(self) -> None:
+        self.settings.setValue(self.comboBox.currentText(), self.comboBoxGroups.currentText())
         for box in self.findChildren(QGroupBox):
             checkNoSignal(box, self.allGroups[self.comboBoxGroups.currentText()][box.title()])
             for check in box.findChildren(QCheckBox):

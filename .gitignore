@@ -2,3 +2,5 @@
 *.conf
 *.ui
 groups/
+*.bat
+*.txt
