@@ -109,7 +109,7 @@ class Form(QMainWindow):
             text, value = self.addons[i].split(': ')
 
             # Different addons with similar names have to be separated; another way would be to pick the first one alphabetically
-            if prev != text[:4] or prev == 'Rare' and text[:4] == 'Rare' or prev == 'Worl' and text[:4] == 'Worl':
+            if prev != text[:4] or prev == 'Rare' and text[:4] == 'Rare' or prev == 'Worl' and text[:4] == 'Worl' or prev == 'Tran' and text[:4] == 'Tran':
                 groupBox: QGroupBox = QGroupBox(text)
                 groupBox.setObjectName(text)
                 groupBox.setLayout(QVBoxLayout())
