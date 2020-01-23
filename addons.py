@@ -4,10 +4,8 @@ import os
 from collections import defaultdict
 from shutil import copyfile
 from filecmp import cmp
-from PySide2.QtWidgets import *
-from PySide2.QtUiTools import QUiLoader
-from PySide2.QtCore import *
-from PySide2.QtCore import *
+from PySide2.QtWidgets import QGroupBox, QMainWindow, QFrame, QGridLayout, QComboBox, QPushButton, QScrollArea, QWidget, QVBoxLayout, QCheckBox, QApplication
+from PySide2.QtCore import QSettings
 
 # Check without emitting event
 def checkNoSignal(box, status: bool):
