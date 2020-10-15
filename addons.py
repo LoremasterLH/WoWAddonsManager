@@ -1,11 +1,13 @@
 # This Python file uses the following encoding: utf-8
-import sys
 import os
+import sys
 from collections import defaultdict
-from shutil import copyfile
 from filecmp import cmp
-from PySide2.QtWidgets import QGroupBox, QMainWindow, QFrame, QGridLayout, QComboBox, QPushButton, QScrollArea, QWidget, QVBoxLayout, QCheckBox, QApplication
+from shutil import copyfile
+
 from PySide2.QtCore import QSettings
+from PySide2.QtWidgets import QGroupBox, QMainWindow, QFrame, QGridLayout, QComboBox, QPushButton, QScrollArea, QWidget, QVBoxLayout, QCheckBox, QApplication
+
 
 # Check without emitting event
 def checkNoSignal(box, status: bool):
@@ -109,7 +111,7 @@ class Form(QMainWindow):
             text, value = self.addons[i].split(': ')
 
             # Different addons with similar names have to be separated; another way would be to pick the first one alphabetically
-            if prev != text[:4] or prev == 'Rare' and text[:4] == 'Rare' or prev == 'Worl' and text[:4] == 'Worl' or prev == 'Tran' and text[:4] == 'Tran':
+            if prev != text[:4] or prev == 'Worl' and text[:4] == 'Worl' or prev == 'Tran' and text[:4] == 'Tran':
                 groupBox: QGroupBox = QGroupBox(text)
                 groupBox.setObjectName(text)
                 groupBox.setLayout(QVBoxLayout())
