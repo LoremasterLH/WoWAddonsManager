@@ -31,7 +31,8 @@ class Form(QMainWindow):
         layout = QGridLayout(self.mainFrame)
 
         # setup
-        self.root = 'C:/Igre/World of Warcraft/_retail_/WTF/Account/12TUZLA21/'
+        self.root = 'C:/Igre/World of Warcraft/_retail_'
+        self.account_root = f'{self.root}/WTF/Account/12TUZLA21/'
         self.groups_dir = 'groups/'
         if not os.path.exists(self.groups_dir):
             os.makedirs(self.groups_dir)
@@ -41,10 +42,10 @@ class Form(QMainWindow):
 
         # Find all the characters
         self.comboBox: QComboBox = QComboBox(self)
-        for subdir, dirs, files in os.walk(self.root):
+        for subdir, dirs, files in os.walk(self.account_root):
             for file in files:
                 if file == 'AddOns.txt':
-                    self.comboBox.addItem(subdir[len(self.root):].replace('\\', '/'))
+                    self.comboBox.addItem(subdir[len(self.account_root):].replace('\\', '/'))
                     self.has_changed.append(False)  # Not yet implemented ... meant for avoiding saving every file when changes are made
         layout.addWidget(self.comboBox, 0, 0)
         self.comboBox.currentIndexChanged.connect(self.changeCharacter)
@@ -96,13 +97,14 @@ class Form(QMainWindow):
     # Construct the groupboxes based on reference character; any addons not in it's AddOns.txt will be ignored. Only better way would be parsing the addons folder, but that is rather complex ... not to mention modules
     def loadData(self, reference: str) -> None:
         # Open reference file to see which addons we have
-        file = open('{0}{1}/AddOns.txt'.format(self.root, reference), 'r')
+        file = open('{0}{1}/AddOns.txt'.format(self.account_root, reference), 'r')
         text = ''
 
         # Sort the addons for proper grouping
         self.addons = list()
         for line in file:
-            self.addons.append(line)
+            if os.path.isdir(os.path.join(self.root, 'Interface', 'AddOns', line.split(':')[0])):  # Only show the line, if an addon with this name actually exists
+                self.addons.append(line)
         file.close()
         self.addons.sort(key=lambda x: x.replace('-', '_'))  # As '-' is considered before ' ', we have to take care of it for proper order
 
@@ -141,7 +143,7 @@ class Form(QMainWindow):
                 check.setChecked(status)
             box.setChecked(status)
     # Returns a list of bool values representing state of the group
-    def getGroupData(self, group_name: str) -> dict():
+    def getGroupData(self, group_name: str) -> dict:
         states = dict()
 
         # We have to find an AddOns.txt file of this group
@@ -154,7 +156,7 @@ class Form(QMainWindow):
             if character == '':
                 print('No suitable file found for group ' + group_name)
                 return states
-            copyfile('{0}{1}/AddOns.txt'.format(self.root, character), '{0}{1}.txt'.format(self.groups_dir, group_name))
+            copyfile('{0}{1}/AddOns.txt'.format(self.account_root, character), '{0}{1}.txt'.format(self.groups_dir, group_name))
 
         # Since it's possible not exist, initialise the dictionary with all values
         for addon in self.addons:
@@ -217,7 +219,7 @@ class Form(QMainWindow):
             self.saveFile(self.comboBoxGroups.itemText(i))
         # Copy group files to appropriate characters
         for i in range(self.comboBox.count()):
-            char_file = '{0}{1}/AddOns.txt'.format(self.root, self.comboBox.itemText(i))
+            char_file = '{0}{1}/AddOns.txt'.format(self.account_root, self.comboBox.itemText(i))
             group_file = '{0}{1}.txt'.format(self.groups_dir, self.settings.value(self.comboBox.itemText(i))) if self.settings.contains(self.comboBox.itemText(i)) else '{0}{1}.txt'.format(self.groups_dir, self.comboBoxGroups.itemText(0))
             # Only overwrite if files are different
             if not cmp(group_file, char_file):
